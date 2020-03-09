@@ -5,14 +5,38 @@ const dateElement = document.getElementById("date")
 const list = document.getElementById("list")
 const input = document.getElementById("input")
 
-//Variables
-LIST = [], id=0
+//Variables and array for local storage
+let LIST , id
+
+//local storage update - every part of code where the list is updated
+//localStorage.setItem("todo", JSON.stringify(LIST))
+
+
 
 //CSS classes
 
 const CHECK = "fa-check-circle";
 const UNCHECK = "fa-circle-thin";
 const LINE_THROUGH = "lineThrough";
+
+let data=localStorage.getItem("todo")
+
+if(data){
+    LIST = JSON.parse(data)
+    id = LIST.length
+    loadList(LIST)
+}else {
+    LIST =[]
+    id =0
+}
+
+//function that Load LIST in the user interface from localStorage
+function loadList(array){
+    array.forEach(function(item){
+        addToDo(item.name,item.id,item.done,item.trash)
+    });
+}
+
 
 //Show todays date
 const options = {weekday: 'long', month: 'long', day:'numeric'}
@@ -51,6 +75,8 @@ document.addEventListener("keyup", function(e){
                     done: false,
                     trash: false
                 })
+                //local storage update - every part of code where the list is updated
+                localStorage.setItem("todo", JSON.stringify(LIST))
                 id++
             }
             input.value=""
@@ -67,12 +93,15 @@ function completeToDo(element){
     // update the list for done or not
     LIST[element.id].done = LIST[element.id].done ? false : true
 
+    
+
 }
     //remove element and update list to trash
 function removeTodo(element){
     element.parentNode.parentNode.removeChild(element.parentNode)
 
     LIST[element.id].trash = true
+    
 
 }
 
@@ -88,4 +117,7 @@ list.addEventListener('click', function(e){
         }else if(elementJob == "delete"){
             removeTodo(element)
         }
+        //local storage update - every part of code where the list is updated
+        localStorage.setItem("todo", JSON.stringify(LIST))
 })
+
